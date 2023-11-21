@@ -4,15 +4,9 @@ require_relative "polymorphic_enum_type/version"
 require_relative "polymorphic_enum_type/config"
 
 module PolymorphicEnumType
-  def self.included(base)
-    base.extend ClassMethods
-  end
-
-  module ClassMethods
-    def belongs_to_polymorphic_enum_type(*args, **kwargs)
-      belongs_to(*args, **kwargs.merge(polymorphic: true))
-      enum "#{args.first}_type", PolymorphicEnumType.config.enum_hash(args.first), scopes: false
-    end
+  def belongs_to_polymorphic_enum_type(*args, **kwargs)
+    belongs_to(*args, **kwargs.merge(polymorphic: true))
+    enum "#{args.first}_type", PolymorphicEnumType.config.enum_hash(args.first), scopes: false
   end
 
   class << self

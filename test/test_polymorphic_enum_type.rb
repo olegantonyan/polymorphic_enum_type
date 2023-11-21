@@ -9,6 +9,10 @@ class TestPolymorphicEnumType < Minitest::Test
     Post.destroy_all
   end
 
+  def test_config_exists
+    assert_equal({ 'Article' => 10, 'Post' => 11, 'SomeNamespace::AnotherArticle' => 672 }, PolymorphicEnumType.config.enum_hash(:commentable))
+  end
+
   def test_polymorphic_has_many
     comment1 = Comment.create(text: '111')
     comment2 = Comment.create(text: '222')
@@ -16,17 +20,17 @@ class TestPolymorphicEnumType < Minitest::Test
 
     Article.create(text: 'one comment', comments: [comment1])
 
-    assert Article.find_by(text: 'one comment').comments.count == 1
-    assert Article.find_by(text: 'one comment').comments.first.text == '111'
+    assert_equal 1, Article.find_by(text: 'one comment').comments.count
+    assert_equal '111',  Article.find_by(text: 'one comment').comments.first.text
 
     Article.create(text: 'two comments', comments: [comment2, comment3])
 
-    assert Article.find_by(text: 'two comments').comments.count == 2
-    assert Article.find_by(text: 'two comments').comments.first.text == '222'
-    assert Article.find_by(text: 'two comments').comments.last.text == '333'
+    assert_equal 2, Article.find_by(text: 'two comments').comments.count
+    assert_equal '222', Article.find_by(text: 'two comments').comments.first.text
+    assert_equal '333', Article.find_by(text: 'two comments').comments.last.text
 
-    assert Article.find_by(text: 'one comment').comments.count == 1
-    assert Article.find_by(text: 'one comment').comments.first.text == '111'
+    assert_equal 1, Article.find_by(text: 'one comment').comments.count
+    assert_equal '111', Article.find_by(text: 'one comment').comments.first.text
   end
 
   def test_polymorphic_has_many_from_another_side
@@ -37,12 +41,12 @@ class TestPolymorphicEnumType < Minitest::Test
     Comment.create(text: '2222', commentable: article2)
     Comment.create(text: '3333', commentable: article2)
 
-    assert Article.find_by(text: 'another one comment').comments.count == 1
-    assert Article.find_by(text: 'another one comment').comments.first.text == '1111'
+    assert_equal 1, Article.find_by(text: 'another one comment').comments.count
+    assert_equal '1111', Article.find_by(text: 'another one comment').comments.first.text
 
-    assert Article.find_by(text: 'another two comments').comments.count == 2
-    assert Article.find_by(text: 'another two comments').comments.first.text == '2222'
-    assert Article.find_by(text: 'another two comments').comments.last.text == '3333'
+    assert_equal 2, Article.find_by(text: 'another two comments').comments.count
+    assert_equal '2222', Article.find_by(text: 'another two comments').comments.first.text
+    assert_equal '3333', Article.find_by(text: 'another two comments').comments.last.text
   end
 
   def test_polymorphic_has_one
@@ -51,15 +55,15 @@ class TestPolymorphicEnumType < Minitest::Test
 
     Post.create(text: 'one comment', comment: comment1)
 
-    assert Post.find_by(text: 'one comment').comment.text == '11111'
+    assert_equal '11111', Post.find_by(text: 'one comment').comment.text
 
     Post.create(text: 'two comment', comment: comment2)
 
-    assert Post.find_by(text: 'one comment').comment.text == '11111'
-    assert Post.find_by(text: 'two comment').comment.text == '22222'
+    assert_equal '11111', Post.find_by(text: 'one comment').comment.text
+    assert_equal '22222', Post.find_by(text: 'two comment').comment.text
 
     Post.create(text: 'no comment')
-    assert Post.find_by(text: 'no comment').comment.nil?
+    assert_nil Post.find_by(text: 'no comment').comment
   end
 
   def test_polymorphic_has_one_from_another_side
@@ -68,22 +72,22 @@ class TestPolymorphicEnumType < Minitest::Test
 
     Comment.create(text: '111_111', commentable: post1)
 
-    assert Post.find_by(text: 'yet another one comment').comment.text == '111_111'
+    assert_equal '111_111', Post.find_by(text: 'yet another one comment').comment.text
 
     Comment.find_by(text: '111_111').destroy
     Comment.create(text: '222_222', commentable: post1)
 
-    assert Post.find_by(text: 'yet another one comment').comment.text == '222_222'
+    assert_equal '222_222', Post.find_by(text: 'yet another one comment').comment.text
 
     Comment.create(text: '333_333', commentable: post2)
 
-    assert Post.find_by(text: 'yet another two comment').comment.text == '333_333'
-    assert Post.find_by(text: 'yet another one comment').comment.text == '222_222'
+    assert_equal '333_333', Post.find_by(text: 'yet another two comment').comment.text
+    assert_equal '222_222', Post.find_by(text: 'yet another one comment').comment.text
 
     Comment.find_by(text: '333_333').destroy
     Comment.create(text: '444_444', commentable: post2)
-    assert Post.find_by(text: 'yet another two comment').comment.text == '444_444'
-    assert Post.find_by(text: 'yet another one comment').comment.text == '222_222'
+    assert_equal '444_444', Post.find_by(text: 'yet another two comment').comment.text
+    assert_equal '222_222', Post.find_by(text: 'yet another one comment').comment.text
   end
 
   def test_with_custom_class_name
@@ -93,18 +97,18 @@ class TestPolymorphicEnumType < Minitest::Test
 
     SomeNamespace::AnotherArticle.create(text: 'one comment', comments: [comment1])
 
-    assert SomeNamespace::AnotherArticle.find_by(text: 'one comment').comments.count == 1
-    assert SomeNamespace::AnotherArticle.find_by(text: 'one comment').comments.first.text == '111'
+    assert_equal 1, SomeNamespace::AnotherArticle.find_by(text: 'one comment').comments.count
+    assert_equal '111', SomeNamespace::AnotherArticle.find_by(text: 'one comment').comments.first.text
 
     SomeNamespace::AnotherArticle.create(text: 'two comments', comments: [comment2, comment3])
 
-    assert SomeNamespace::AnotherArticle.find_by(text: 'two comments').comments.count == 2
-    assert SomeNamespace::AnotherArticle.find_by(text: 'two comments').comments.first.text == '222'
-    assert SomeNamespace::AnotherArticle.find_by(text: 'two comments').comments.last.text == '333'
+    assert_equal 2, SomeNamespace::AnotherArticle.find_by(text: 'two comments').comments.count
+    assert_equal '222', SomeNamespace::AnotherArticle.find_by(text: 'two comments').comments.first.text
+    assert_equal '333', SomeNamespace::AnotherArticle.find_by(text: 'two comments').comments.last.text
 
-    assert SomeNamespace::AnotherArticle.find_by(text: 'one comment').comments.count == 1
-    assert SomeNamespace::AnotherArticle.find_by(text: 'one comment').comments.first.text == '111'
+    assert_equal 1, SomeNamespace::AnotherArticle.find_by(text: 'one comment').comments.count
+    assert_equal '111', SomeNamespace::AnotherArticle.find_by(text: 'one comment').comments.first.text
 
-    assert SomeNamespace::AnotherComment.find_by(text: '111').commentable.another_method == 'ONE COMMENT'
+    assert_equal 'ONE COMMENT', SomeNamespace::AnotherComment.find_by(text: '111').commentable.another_method
   end
 end
