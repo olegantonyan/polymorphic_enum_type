@@ -5,8 +5,10 @@ require_relative "polymorphic_enum_type/config"
 
 module PolymorphicEnumType
   def belongs_to_polymorphic_enum_type(*args, **kwargs)
+    attr = args.first
+
     belongs_to(*args, **kwargs.merge(polymorphic: true))
-    enum "#{args.first}_type", PolymorphicEnumType.config.enum_hash(args.first), scopes: false
+    enum("#{attr}_type", PolymorphicEnumType.config.enum_hash(attr), scopes: false)
   end
 
   class << self

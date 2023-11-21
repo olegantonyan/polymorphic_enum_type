@@ -8,13 +8,11 @@ Gem::Specification.new do |spec|
   spec.authors = ["Oleg Antonyan"]
   spec.email = ["oleg.b.antonyan@gmail.com"]
 
-  spec.summary = "Use integer database field for polymorphic association type."
-  spec.description = spec.summary
+  spec.summary = "Allows integer database field for polymorphic association type instead of string via enum."
+  spec.description = "Does the same as https://github.com/clio/polymorphic_integer_type but without monkey-patching, using ActiveRecord::Enum instead."
   spec.homepage = "https://github.com/olegantonyan/polymorphic_enum_type"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
-
-  spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
