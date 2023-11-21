@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     polymorphic_enum_type (0.1.0)
-      activerecord
+      activerecord (>= 5.2)
 
 GEM
   remote: https://rubygems.org/

@@ -14,7 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         gemfile:
-          - Gemfile.rails-5.2-stable
           - Gemfile.rails-6.0-stable
           - Gemfile.rails-6.1-stable
           - Gemfile.rails-7.0-stable
@@ -27,12 +26,7 @@ jobs:
             ruby-version: "3.1"
           - gemfile: Gemfile.rails-6.0-stable
             ruby-version: "3.2"
-          - gemfile: Gemfile.rails-5.2-stable
-            ruby-version: "3.0"
-          - gemfile: Gemfile.rails-5.2-stable
-            ruby-version: "3.1"
-          - gemfile: Gemfile.rails-5.2-stable
-            ruby-version: "3.2"
+
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}
     steps:
