@@ -1,5 +1,7 @@
 # PolymorphicEnumType
 
+[![CI](https://github.com/olegantonyan/polymorphic_enum_type/actions/workflows/ci.yml/badge.svg)](https://github.com/olegantonyan/polymorphic_enum_type/actions/workflows/ci.yml)
+
 Storing class name as a string for each record is bad idea performance-wise. This gem enables `ActiveRecord::Enum` as type column in polymorphic associations. Unlike https://github.com/clio/polymorphic_integer_type this gem does not monkey-patch anything. In fact, all it does is adding `enum` to your model with values as `Hash` where key is your class name and value is integer associated with this class. And that's it, litteraly a single line of code does the trick.
 
 The gem does one extra step - adds configuration and wraps `belongs_to ... polymorphic: true` along with `enum ...` in one method - `belongs_to_polymorphic_enum_type`.
