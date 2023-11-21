@@ -8,7 +8,11 @@ module PolymorphicEnumType
     attr = args.first
 
     belongs_to(*args, **kwargs.merge(polymorphic: true))
-    enum("#{attr}_type", PolymorphicEnumType.config.enum_hash(attr), scopes: false)
+    if ActiveRecord::VERSION::MAJOR >= 7
+      enum("#{attr}_type", PolymorphicEnumType.config.enum_hash(attr), scopes: false)
+    else
+      enum("#{attr}_type".to_sym => PolymorphicEnumType.config.enum_hash(attr), _scopes: false)
+    end
   end
 
   class << self
