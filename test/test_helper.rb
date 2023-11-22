@@ -36,7 +36,7 @@ ActiveRecord::Schema.define do
 end
 
 PolymorphicEnumType.configure do |config|
-  config.add :commentable, { 'Article' => 10, 'Post' => 11, 'SomeNamespace::AnotherArticle' => 672, 'PostWithSti' => 11 }
+  config.add :commentable, { 10 => 'Article', 11 => 'Post', 672 => 'SomeNamespace::AnotherArticle' }
 end
 
 class Article < ActiveRecord::Base
