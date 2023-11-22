@@ -2,9 +2,7 @@
 
 [![CI](https://github.com/olegantonyan/polymorphic_enum_type/actions/workflows/ci.yml/badge.svg)](https://github.com/olegantonyan/polymorphic_enum_type/actions/workflows/ci.yml)
 
-Storing class name as a string for each record is bad idea performance-wise. This gem enables `ActiveRecord::Enum` as type column in polymorphic associations. Unlike https://github.com/clio/polymorphic_integer_type this gem does not monkey-patch anything. In fact, all it does is adding `enum` to your model with values as `Hash` where key is your class name and value is integer associated with this class. And that's it, litteraly a single line of code does the trick.
-
-The gem does one extra step - adds configuration and wraps `belongs_to ... polymorphic: true` along with `enum ...` in one method - `belongs_to_polymorphic_enum_type`.
+Storing class name as a string for each record is bad idea performance-wise. This gem enables `ActiveRecord::Enum` as type column in polymorphic associations. Unlike https://github.com/clio/polymorphic_integer_type this gem does not monkey-patch anything. In fact, all it does is adding `enum` to your model with values as `Hash` where key is your class name and value is integer associated with this class. And that's it, literally a single line of code does the trick.
 
 ## Installation
 
@@ -22,7 +20,7 @@ Extend `PolymorphicEnumType` module in a model with polymorphic `belongs_to` and
 ```
 class Comment < ActiveRecord::Base
   extend PolymorphicEnumType
-  belongs_to_polymorphic_enum_type :commentable
+  belongs_to :commentable, polymorphic: true, enum_type: true
 end
 ```
 
@@ -51,49 +49,68 @@ Note: The mapping here can start from whatever integer you wish, but I would adv
 If you want to convert a polymorphic association that is already a string, you'll need to set up a migration. (Assuming SQL for the time being, but this should be pretty straightforward.)
 
 ```
-class PictureToPolymorphicIntegerType < ActiveRecord::Migration
+class CommentsToPolymorphicEnumType < ActiveRecord::Migration
 
   def up
-    change_table :pictures do |t|
-      t.integer :new_imageable_type
+    change_table :comments do |t|
+      t.integer :new_commentable_type
     end
 
     execute <<-SQL
       UPDATE picture
-      SET new_imageable_type = CASE imageable_type
-                                 WHEN 'Employee' THEN 1
-                                 WHEN 'Product' THEN 2
-                               END
+      SET new_commentable_type = CASE commentable_type
+                                   WHEN 'Post' THEN 1
+                                   WHEN 'Article' THEN 2
+                                 END
     SQL
 
-    change_table :pictures, :bulk => true do |t|
+    change_table :comments, bulk: true do |t|
       t.remove :imageable_type
-      t.rename :new_imageable_type, :imageable_type
+      t.rename :new_commentable_type, :commentable_type
     end
   end
 
   def down
-    change_table :pictures do |t|
-      t.string :new_imageable_type
+    change_table :comments do |t|
+      t.string :new_commentable_type
     end
 
     execute <<-SQL
-      UPDATE picture
-      SET new_imageable_type = CASE imageable_type
-                                 WHEN 1 THEN 'Employee'
-                                 WHEN 2 THEN 'Product'
-                               END
+      UPDATE comments
+      SET new_commentable_type = CASE imageable_type
+                                   WHEN 1 THEN 'Post'
+                                   WHEN 2 THEN 'Article'
+                                 END
     SQL
 
     change_table :pictures, :bulk => true do |t|
-      t.remove :imageable_type
-      t.rename :new_imageable_type, :imageable_type
+      t.remove :commentable_type
+      t.rename :new_commentable_type, :commentable_type
     end
   end
 end
 ```
 
-Lastly, you will need to be careful of any place where you are doing raw SQL queries with the string (imageable_type = 'Employee'). They should use the integer instead.
+Lastly, you will need to be careful of any place where you are doing raw SQL queries with the string (imageable_type = 'Employee'). They should use the integer instead. However, when using ActiveRecord query methods and passing attributes as symbols there you still have to use strings:
+
+```
+Comment.create(text: 'good', commentable: Post.create(text: '123'))
+artcile = Article.create(text: '1234')
+Comment.create(text: 'good1', commentable: artcile)
+Comment.create(text: 'good2', commentable: artcile)
+
+# using where with attr: value syntax works with wtrings - ActiveRecord converts strings to enum values prior to query
+assert_equal 1, Comment.where(commentable_type: 'Post').count
+assert_equal 2, Comment.where(commentable_type: 'Article').count
+
+# whenever you need to write raw SQL query you have to use integers, since ActiveRecord no longer converts strings to integers for enum in such cases
+assert_equal 0, Comment.where("commentable_type = 'Post'").count
+assert_equal 0, Comment.where("commentable_type = 'Article'").count
+
+# commentable_types holds hash used for enum
+assert_equal 1, Comment.where("commentable_type = ?", Comment.commentable_types['Post']).count
+assert_equal 2, Comment.where("commentable_type = ?", Comment.commentable_types['Article']).count
+```
 
 ## Development
 

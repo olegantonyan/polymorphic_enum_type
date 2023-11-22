@@ -111,4 +111,20 @@ class TestPolymorphicEnumType < Minitest::Test
 
     assert_equal 'ONE COMMENT', SomeNamespace::AnotherComment.find_by(text: '111').commentable.another_method
   end
+
+  def test_queries
+    Comment.create(text: 'good', commentable: Post.create(text: '123'))
+    artcile = Article.create(text: '1234')
+    Comment.create(text: 'good1', commentable: artcile)
+    Comment.create(text: 'good2', commentable: artcile)
+
+    assert_equal 1, Comment.where(commentable_type: 'Post').count
+    assert_equal 2, Comment.where(commentable_type: 'Article').count
+
+    assert_equal 0, Comment.where("commentable_type = 'Post'").count
+    assert_equal 0, Comment.where("commentable_type = 'Article'").count
+
+    assert_equal 1, Comment.where("commentable_type = ?", Comment.commentable_types['Post']).count
+    assert_equal 2, Comment.where("commentable_type = ?", Comment.commentable_types['Article']).count
+  end
 end

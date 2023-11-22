@@ -48,7 +48,7 @@ end
 
 class Comment < ActiveRecord::Base
   extend PolymorphicEnumType
-  belongs_to_polymorphic_enum_type :commentable
+  belongs_to :commentable, polymorphic: true, enum_type: true
 end
 
 module SomeNamespace
@@ -56,7 +56,7 @@ module SomeNamespace
     self.table_name = :comments
 
     extend PolymorphicEnumType
-    belongs_to_polymorphic_enum_type :commentable
+    belongs_to :commentable, polymorphic: true, enum_type: true
   end
 
   class AnotherArticle < ActiveRecord::Base
