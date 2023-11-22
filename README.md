@@ -16,7 +16,7 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-Extend `PolymorphicEnumType` module in a model with polymorphic `belongs_to` and use `belongs_to_polymorphic_enum_type` instead of `belongs_to`:
+Extend `PolymorphicEnumType` module in a model and add `enum_type: true` to `belongs_to`:
 ```ruby
 class Comment < ActiveRecord::Base
   extend PolymorphicEnumType
