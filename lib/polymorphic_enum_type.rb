@@ -9,7 +9,7 @@ module PolymorphicEnumType
       if ActiveRecord::VERSION::MAJOR >= 7
         enum("#{name}_type", PolymorphicEnumType.config.enum_hash(name), scopes: false, instance_methods: false)
       else
-        enum("#{name}_type".to_sym => PolymorphicEnumType.config.enum_hash(name), _scopes: false, _instance_methods: false)
+        enum("#{name}_type".to_sym => PolymorphicEnumType.config.enum_hash(name), _scopes: false)
       end
     end
 
