@@ -59,8 +59,8 @@ class CommentsToPolymorphicEnumType < ActiveRecord::Migration
     execute <<-SQL
       UPDATE picture
       SET new_commentable_type = CASE commentable_type
-                                   WHEN 'Post' THEN 1
-                                   WHEN 'Article' THEN 2
+                                   WHEN 'Post' THEN 2
+                                   WHEN 'Article' THEN 1
                                  END
     SQL
 
@@ -78,8 +78,8 @@ class CommentsToPolymorphicEnumType < ActiveRecord::Migration
     execute <<-SQL
       UPDATE comments
       SET new_commentable_type = CASE imageable_type
-                                   WHEN 1 THEN 'Post'
-                                   WHEN 2 THEN 'Article'
+                                   WHEN 2 THEN 'Post'
+                                   WHEN 1 THEN 'Article'
                                  END
     SQL
 
