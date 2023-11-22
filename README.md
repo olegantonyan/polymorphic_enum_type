@@ -65,7 +65,7 @@ class CommentsToPolymorphicEnumType < ActiveRecord::Migration
     SQL
 
     change_table :comments, bulk: true do |t|
-      t.remove :imageable_type
+      t.remove :commentable_type
       t.rename :new_commentable_type, :commentable_type
     end
   end
@@ -77,7 +77,7 @@ class CommentsToPolymorphicEnumType < ActiveRecord::Migration
 
     execute <<-SQL
       UPDATE comments
-      SET new_commentable_type = CASE imageable_type
+      SET new_commentable_type = CASE commentable_type
                                    WHEN 2 THEN 'Post'
                                    WHEN 1 THEN 'Article'
                                  END
@@ -91,7 +91,7 @@ class CommentsToPolymorphicEnumType < ActiveRecord::Migration
 end
 ```
 
-Lastly, you will need to be careful of any place where you are doing raw SQL queries with the string (imageable_type = 'Employee'). They should use the integer instead. However, when using ActiveRecord query methods and passing attributes as symbols there you still have to use strings:
+Lastly, you will need to be careful of any place where you are doing raw SQL queries with the string (commentable_type = 'Post'). They should use the integer instead. However, when using ActiveRecord query methods and passing attributes as symbols there you still have to use strings:
 
 ```ruby
 Comment.create(text: 'good', commentable: Post.create(text: '123'))
