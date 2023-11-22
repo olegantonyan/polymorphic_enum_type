@@ -10,7 +10,7 @@ class TestPolymorphicEnumType < Minitest::Test
   end
 
   def test_config_exists
-    assert_equal({ 'Article' => 10, 'Post' => 11, 'SomeNamespace::AnotherArticle' => 672, "PostWithSti" => 11 }, PolymorphicEnumType.config.enum_hash(:commentable))
+    assert_equal({ 'Article' => 10, 'Post' => 11, 'SomeNamespace::AnotherArticle' => 672 }, PolymorphicEnumType.config.enum_hash(:commentable))
   end
 
   def test_polymorphic_has_many
