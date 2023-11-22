@@ -127,4 +127,11 @@ class TestPolymorphicEnumType < Minitest::Test
     assert_equal 1, Comment.where("commentable_type = ?", Comment.commentable_types['Post']).count
     assert_equal 2, Comment.where("commentable_type = ?", Comment.commentable_types['Article']).count
   end
+
+  def test_with_sti
+    PostWithSti.create(text: "sti 1", comment: Comment.create(text: '12345'))
+
+    assert_equal '12345', PostWithSti.find_by(text: "sti 1").comment.text
+    assert_equal '12345', Post.find_by(text: "sti 1").comment.text
+  end
 end

@@ -13,6 +13,7 @@ ActiveRecord::Schema.define do
   self.verbose = false
 
   create_table :posts, force: true do |t|
+    t.string :sti_type
     t.string :text
 
     t.timestamps
@@ -44,6 +45,10 @@ end
 
 class Post < ActiveRecord::Base
   has_one :comment, as: :commentable
+  self.inheritance_column = :sti_type
+end
+
+class PostWithSti < Post
 end
 
 class Comment < ActiveRecord::Base
