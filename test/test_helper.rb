@@ -51,6 +51,11 @@ end
 class PostWithSti < Post
 end
 
+class NonExistingEnumPost < ActiveRecord::Base
+  self.table_name = :posts
+  has_many :comments, as: :commentable
+end
+
 class Comment < ActiveRecord::Base
   extend PolymorphicEnumType
   belongs_to :commentable, polymorphic: true, enum_type: true

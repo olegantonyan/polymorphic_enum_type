@@ -137,4 +137,10 @@ class TestPolymorphicEnumType < Minitest::Test
 
     assert_equal '12345', Post.find_by(text: "sti 1").comment.text
   end
+
+  def test_non_existing_mapping
+    assert_raises(NameError) do
+      NonExistingEnum.create(text: 'wat', comments: [Comment.create(text: '1')])
+    end
+  end
 end
