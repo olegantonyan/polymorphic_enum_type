@@ -133,6 +133,7 @@ class TestPolymorphicEnumType < Minitest::Test
 
     assert_equal '12345', PostWithSti.find_by(text: "sti 1").comment.text
     assert_equal 'PostWithSti', Comment.find_by(text: '12345').commentable.class.name
+    assert_equal 'Post', Comment.find_by(text: '12345').commentable.class.polymorphic_name
     assert_equal 'Post', Comment.find_by(text: '12345').commentable_type
 
     assert_equal '12345', Post.find_by(text: "sti 1").comment.text
