@@ -53,11 +53,11 @@ class CommentsToPolymorphicEnumType < ActiveRecord::Migration
 
   def up
     change_table :comments do |t|
-      t.integer :new_commentable_type
+      t.bigint :new_commentable_type
     end
 
     execute <<-SQL
-      UPDATE picture
+      UPDATE comments
       SET new_commentable_type = CASE commentable_type
                                    WHEN 'Post' THEN 2
                                    WHEN 'Article' THEN 1
@@ -83,7 +83,7 @@ class CommentsToPolymorphicEnumType < ActiveRecord::Migration
                                  END
     SQL
 
-    change_table :pictures, :bulk => true do |t|
+    change_table :comments, bulk: true do |t|
       t.remove :commentable_type
       t.rename :new_commentable_type, :commentable_type
     end
