@@ -17,7 +17,7 @@ If bundler is not being used to manage dependencies, install the gem by executin
 ## Usage
 
 Extend `PolymorphicEnumType` module in a model with polymorphic `belongs_to` and use `belongs_to_polymorphic_enum_type` instead of `belongs_to`:
-```
+```ruby
 class Comment < ActiveRecord::Base
   extend PolymorphicEnumType
   belongs_to :commentable, polymorphic: true, enum_type: true
@@ -25,7 +25,7 @@ end
 ```
 
 The database table must have `commentable_type` integer field instead of default string:
-```
+```ruby
 create_table :comments do |t|
   t.bigint  :commentable_id
   t.bigint  :commentable_type
@@ -35,7 +35,7 @@ end
 ```
 
 Create initializer, for example `config/initializers/polymorphic_enum_type.rb` and set the mapping integer to class name there:
-```
+```ruby
 PolymorphicEnumType.configure do |config|
   config.add :commentable, { 1 => 'Article', 2 => 'Post' }
   config.add :imageable, { 1 => 'Comment', 2 => 'User' }
@@ -48,7 +48,7 @@ Note: The mapping here can start from whatever integer you wish, but I would adv
 
 If you want to convert a polymorphic association that is already a string, you'll need to set up a migration. (Assuming SQL for the time being, but this should be pretty straightforward.)
 
-```
+```ruby
 class CommentsToPolymorphicEnumType < ActiveRecord::Migration
 
   def up
@@ -93,7 +93,7 @@ end
 
 Lastly, you will need to be careful of any place where you are doing raw SQL queries with the string (imageable_type = 'Employee'). They should use the integer instead. However, when using ActiveRecord query methods and passing attributes as symbols there you still have to use strings:
 
-```
+```ruby
 Comment.create(text: 'good', commentable: Post.create(text: '123'))
 artcile = Article.create(text: '1234')
 Comment.create(text: 'good1', commentable: artcile)
