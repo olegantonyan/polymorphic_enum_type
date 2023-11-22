@@ -7,11 +7,13 @@ module PolymorphicEnumType
     end
 
     def add(attr, hash)
+      raise "#{attr} already exists" if h[attr.to_sym]
+
       h[attr.to_sym] = hash
     end
 
     def enum_hash(attr)
-      h.fetch(attr.to_sym).invert
+      h.fetch(attr.to_sym)
     end
 
     private

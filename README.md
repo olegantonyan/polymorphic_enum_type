@@ -37,8 +37,8 @@ end
 Create initializer, for example `config/initializers/polymorphic_enum_type.rb` and set the mapping integer to class name there:
 ```ruby
 PolymorphicEnumType.configure do |config|
-  config.add :commentable, { 1 => 'Article', 2 => 'Post' }
-  config.add :imageable, { 1 => 'Comment', 2 => 'User' }
+  config.add :commentable, { 'Article' => 1, 'Post' => 2 }
+  config.add :imageable, { 'Comment' => 1, 'User' => 2 }
 end
 ```
 
